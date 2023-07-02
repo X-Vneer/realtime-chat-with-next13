@@ -56,7 +56,7 @@ export async function POST(req: Request) {
 
         // sending frind requst
 
-        db.sadd(`uesr:${toAddId}:incoming_friend_requests`, session.user.id)
+        await db.sadd(`user:${toAddId}:incoming_friend_requests`, session.user.id)
 
         return new Response('OK')
 
