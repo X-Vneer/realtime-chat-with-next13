@@ -24,7 +24,7 @@ export async function fetchRedis(
         throw Error(`Error executing Redis command: ${response.statusText}`)
     }
 
-    const data = (await response.json()) as { result: string | number | null }
+    const data = await response.json()
 
     return data.result
 
