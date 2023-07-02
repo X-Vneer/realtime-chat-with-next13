@@ -4,34 +4,40 @@ import Link from "next/link";
 import { getServerSession } from "next-auth";
 import { ReactNode } from "react";
 import { Icons } from "@/components/Icons";
-import type { Icon } from '@/components/Icons'
+import type { Icon } from "@/components/Icons";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import SignoutButton from "@/components/ui/SignoutButton";
-
+import FriendRequestsSidbarOptions from "@/components/FriendRequestsSidbarOptions";
+import { fetchRedis } from "@/helpers/redis";
 
 type SidebarOptions = {
-    id: number,
-    name: string,
-    href: string,
-    Icon: Icon
-}
+    id: number;
+    name: string;
+    href: string;
+    Icon: Icon;
+};
 const sidebarOptions: SidebarOptions[] = [
     {
         id: 1,
-        name: 'Add Friend',
-        href: '/dashboard/add-friends',
-        Icon: 'UserPlus'
-    }
-]
+        name: "Add Friend",
+        href: "/dashboard/add-friends",
+        Icon: "UserPlus",
+    },
+];
 export default async function DashboardLayout({
-
     children,
 }: {
     children: ReactNode;
 }) {
     const session = await getServerSession(authOptions);
     if (!session) redirect("/login");
+
+    // getting initialUnseenFriendRequestCount
+    const initialUnseenFriendRequestCount = (await fetchRedis(
+        'smembers',
+        `user:${session.user.id}:incoming_friend_requests`
+    ) as User[]).length
     return (
         <main className="flex min-h-screen ">
             <div className=" w-full max-w-xs flex flex-col gap-y-6 border-r border-r-gray-200  bg-white p-4 lg:p-6 ">
@@ -44,56 +50,60 @@ export default async function DashboardLayout({
                 </div>
 
                 <nav className="flex flex-1 flex-col">
-                    <ul
-                        role="list"
-                        className="flex flex-1 flex-col gap-y-4"
-                    >
+                    <ul role="list" className="flex flex-1 flex-col gap-y-4">
                         <li>
-
                             <p>/ her goes your chat</p>
-
-
                         </li>
                         <li>
                             <div>
-                                <p className='text-xs font-semibold leading-6 text-gray-400'>
+                                <p className="text-xs font-semibold leading-6 text-gray-400">
                                     Overview
                                 </p>
-                                <ul role="list" className="-mx-2 mt-2 space-y-1">
-                                    {
-                                        sidebarOptions.map(option => {
-                                            const Icon = Icons[option.Icon]
-                                            return <li key={option.id}>
-                                                <Link href={option.href} className=" text-gray-700  hover:bg-gray-50 group flex items-center gap-3 rounded-md p-2 text-sm font-semibold  duration-300">
-
-                                                    <Button variant="outline" size="icon" className=" group-hover:bg-accent duration-300 shrink-0">
-                                                        <Icon className='h-4 w-4' />
+                                <ul role="list" className=" mt-2 space-y-1">
+                                    {sidebarOptions.map((option) => {
+                                        const Icon = Icons[option.Icon];
+                                        return (
+                                            <li key={option.id}>
+                                                <Link
+                                                    href={option.href}
+                                                    className=" text-gray-700  hover:bg-gray-50 group flex items-center gap-3 rounded-md p-2 text-sm font-semibold  duration-300"
+                                                >
+                                                    <Button
+                                                        variant="outline"
+                                                        size="icon"
+                                                        className=" group-hover:bg-accent duration-300 shrink-0"
+                                                    >
+                                                        <Icon className="h-4 w-4" />
                                                     </Button>
-                                                    <span className='truncate'>{option.name}</span>
+                                                    <span className="truncate">{option.name}</span>
                                                 </Link>
                                             </li>
-                                        })
-                                    }
+                                        );
+                                    })}
                                 </ul>
                             </div>
                         </li>
 
-                        <li className=' mt-auto flex items-center'>
-                            <div className='flex flex-1 items-center gap-x-4 px-1 py-3 text-sm font-semibold leading-6 text-gray-900'>
-                                <div className='relative h-8 w-8 bg-gray-50'>
+                        <li>
+                            <FriendRequestsSidbarOptions sessionId={session.user.id} initialUnseenFriendRequestCount={initialUnseenFriendRequestCount} />
+                        </li>
+
+                        <li className=" mt-auto flex items-center">
+                            <div className="flex flex-1 items-center gap-x-4 px-1 py-3 text-sm font-semibold leading-6 text-gray-900">
+                                <div className="relative h-8 w-8 bg-gray-50">
                                     <Image
                                         fill
-                                        referrerPolicy='no-referrer'
-                                        className='rounded-full'
-                                        src={session.user.image || ''}
-                                        alt='Your profile picture'
+                                        referrerPolicy="no-referrer"
+                                        className="rounded-full"
+                                        src={session.user.image || ""}
+                                        alt="Your profile picture"
                                     />
                                 </div>
 
-                                <span className='sr-only'>Your profile</span>
-                                <div className='flex flex-col'>
-                                    <span aria-hidden='true'>{session.user.name}</span>
-                                    <span className='text-xs text-zinc-400' aria-hidden='true'>
+                                <span className="sr-only">Your profile</span>
+                                <div className="flex flex-col">
+                                    <span aria-hidden="true">{session.user.name}</span>
+                                    <span className="text-xs text-zinc-400" aria-hidden="true">
                                         {session.user.email}
                                     </span>
                                 </div>
@@ -101,7 +111,6 @@ export default async function DashboardLayout({
 
                             <SignoutButton />
                         </li>
-
                     </ul>
                 </nav>
             </div>
