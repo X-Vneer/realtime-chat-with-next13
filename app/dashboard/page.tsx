@@ -6,10 +6,7 @@ export default async function Dashboard() {
     // const section = await getServerSession(authOptions)
     const session = await getServerSession(authOptions)
 
-    return <main>
-        <pre>
-            {JSON.stringify(session)}
-        </pre>
+    return <section>
         dashboard
-    </main>
+    </section>
 }
