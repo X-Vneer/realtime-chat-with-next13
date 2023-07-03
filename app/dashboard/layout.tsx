@@ -1,5 +1,5 @@
 import { authOptions } from "@/lib/auth";
-import { notFound, redirect } from "next/navigation";
+import { redirect } from "next/navigation";
 import Link from "next/link";
 import { getServerSession } from "next-auth";
 import { ReactNode } from "react";
