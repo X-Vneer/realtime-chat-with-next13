@@ -7,6 +7,8 @@ import { z } from 'zod'
 export async function POST(req: Request) {
     try {
 
+
+
         // making sure user is authorized
         const session = await getServerSession(authOptions)
 
@@ -15,24 +17,18 @@ export async function POST(req: Request) {
         }
 
         const body = await req.json()
-
         const { id: toAddId } = z.object({ id: z.string() }).parse(body)
-
 
         // checking user has reseved a friend req
         const haveAFriendReq = (await fetchRedis('sismember', `user:${session.user.id}:incoming_friend_requests`, toAddId)) as 0 | 1
 
         if (!haveAFriendReq) {
-            return new Response('Could not accept this user, they did NOT send you a friend request yet', { status: 400 })
+            return new Response('Could not deny this user, they did NOT send you a friend request yet', { status: 400 })
 
         }
 
-        // adding friends to each other and clean friend requests
-        await Promise.all([
-            db.sadd(`user:${session.user.id}:friends`, toAddId),
-            db.sadd(`user:${toAddId}:friends`, session.user.id),
-            db.srem(`user:${session.user.id}:incoming_friend_requests`, toAddId),
-        ])
+        // removing  friend req from db
+        await db.srem(`user:${session.user.id}:incoming_friend_requests`, toAddId);
 
         return new Response('OK')
 

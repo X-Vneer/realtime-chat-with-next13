@@ -28,7 +28,6 @@ const FriendRequests = ({ initialIncomingFriendRequests, sessionId }: Props) => 
 
 
         } catch (error) {
-            console.log("🚀 ~ file: FriendRequests.tsx:31 ~ acceptFriend ~ error:", error)
             if (axios.isAxiosError(error)) {
                 toast.error(error.response?.data || 'Could not accept a friend request, Please try later')
                 return
