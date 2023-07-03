@@ -62,14 +62,13 @@ const AddFrindsForm = (props: Props) => {
     }
 
     return (
-        <section className='p-8'>
-            <h2 className='my-6  text-2xl lg:text-3xl font-bold tracking-tight text-gray-900'>Add a new friend</h2>
-            <form onSubmit={handleSubmit(onSubmit)}>
-                <label id='email-input' className='mb-4 inline-block' >
+        <div >
+            <form onSubmit={handleSubmit(onSubmit)} className='w-full max-w-sm'>
+                <label id='email-input' className='mb-3 inline-block' >
                     Add your friend Emaill:
                 </label>
                 <div className="flex w-full max-w-sm  items-start space-x-2">
-                    <div>
+                    <div className=' basis-80'>
                         <Input  {...register('email')} id='email-input' type="email" placeholder="Email" />
                         {errors.email ? <p className='mt-1 text-[12px] text-red-600'>{errors.email.message}</p> : null}
 
@@ -82,7 +81,7 @@ const AddFrindsForm = (props: Props) => {
                 ) : null}
 
             </form>
-        </section>
+        </div>
     )
 }
 
