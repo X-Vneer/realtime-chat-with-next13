@@ -45,7 +45,7 @@ export default async function Chat({ params: { chatId } }: Props) {
 
     const partnerId = chatId.startsWith(user.id) ? secondUserId : firstUserId
 
-    const chatPartner = (await db.get(`user:${partnerId}:`)) as User
+    const chatPartner = (await db.get(`user:${partnerId}`)) as User
     if (!chatPartner) return notFound()
 
 

@@ -1,11 +1,12 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Check, X } from 'lucide-react'
 import { Button } from './ui/button'
 import Image from 'next/image'
 import axios from 'axios'
 import { toast } from 'react-hot-toast'
+import { usePathname, useRouter } from 'next/navigation'
 
 type Props = {
     initialIncomingFriendRequests: (IncomingFriendRequest)[],
@@ -58,6 +59,15 @@ const FriendRequests = ({ initialIncomingFriendRequests, sessionId }: Props) => 
         }
 
     }
+
+    // const router = useRouter()
+    // const pathName = usePathname()
+
+    // useEffect(() => {
+    //     router.refresh()
+    //     // eslint-disable-next-line react-hooks/exhaustive-deps
+    // }, [pathName])
+
 
     if (!friendRequests.length) return <p className='text-sm text-zinc-500 '>You do not have any incoming friend requests</p>
     return (

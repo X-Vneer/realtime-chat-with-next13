@@ -3,6 +3,7 @@ import { User } from 'lucide-react'
 import Link from 'next/link'
 import React, { useState } from 'react'
 import { Button } from './ui/button'
+import Badge from './ui/Badge'
 
 type Props = {
     sessionId: string,
@@ -14,7 +15,7 @@ const FriendRequestsSidbarOptions = ({ initialUnseenFriendRequestCount, sessionI
     const [UnseenFriendRequest, setUnseenFriendRequest] = useState(initialUnseenFriendRequestCount)
     return (
         <Link href='/dashboard/requests'
-            className=" text-gray-700  hover:bg-gray-50 group flex items-center gap-3 rounded-md p-2 text-sm font-semibold  duration-300"
+            className=" text-gray-700  hover:bg-gray-100 group flex items-center gap-3 rounded-md p-2 text-sm font-semibold  duration-300"
         >
             <Button
                 variant="outline"
@@ -27,9 +28,10 @@ const FriendRequestsSidbarOptions = ({ initialUnseenFriendRequestCount, sessionI
             <p className='truncate'>Friend requests</p>
 
             {
-                UnseenFriendRequest ? <div className='rounded-full w-5 h-5 text-xs flex justify-center items-center text-white bg-indigo-500 group-hover:bg-indigo-600 duration-300 !leading-[0]'>
-                    {UnseenFriendRequest}
-                </div> : null
+                UnseenFriendRequest ?
+                    <Badge>
+                        {UnseenFriendRequest}
+                    </Badge> : null
             }
         </Link>
     )

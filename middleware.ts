@@ -10,7 +10,6 @@ export default withAuth(
 
         // mange route protection
         const isAuth = await getToken({ req })
-        console.log("🚀 ~ file: middleware.ts:14 ~ isAuth:", isAuth)
 
         if (isAuth && pathName.startsWith("/login")) {
             return NextResponse.redirect(new URL('/dashboard', req.url))

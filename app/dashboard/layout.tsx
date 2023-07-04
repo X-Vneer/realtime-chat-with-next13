@@ -74,7 +74,7 @@ export default async function DashboardLayout({
                                             <li key={option.id}>
                                                 <Link
                                                     href={option.href}
-                                                    className=" text-gray-700  hover:bg-gray-50 group flex items-center gap-3 rounded-md p-2 text-sm font-semibold  duration-300"
+                                                    className=" text-gray-700  hover:bg-gray-100 group flex items-center gap-3 rounded-md p-2 text-sm font-semibold  duration-300"
                                                 >
                                                     <Button
                                                         variant="outline"
