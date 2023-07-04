@@ -9,7 +9,9 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import SignoutButton from "@/components/ui/SignoutButton";
 import FriendRequestsSidbarOptions from "@/components/FriendRequestsSidbarOptions";
-import { fetchRedis } from "@/helpers/redis";
+import getFriendsByUserId from "@/helpers/get-friends-by-user-id";
+import { db } from "@/lib/db";
+import SidebarChats from "@/components/SidebarChats";
 
 type SidebarOptions = {
     id: number;
@@ -17,6 +19,10 @@ type SidebarOptions = {
     href: string;
     Icon: Icon;
 };
+
+// to force dynamic pages
+export const dynamic = 'force-dynamic'
+
 const sidebarOptions: SidebarOptions[] = [
     {
         id: 1,
@@ -34,10 +40,12 @@ export default async function DashboardLayout({
     if (!session) redirect("/login");
 
     // getting initialUnseenFriendRequestCount
-    const initialUnseenFriendRequestCount = (await fetchRedis(
-        'smembers',
-        `user:${session.user.id}:incoming_friend_requests`
-    ) as User[]).length
+    const initialUnseenFriendRequestCount = (await db.smembers(`user:${session.user.id}:incoming_friend_requests`)).length
+
+
+    // fetching friends
+    const friends = await getFriendsByUserId(session.user.id)
+
     return (
         <main className="flex min-h-screen ">
             <div className=" w-full max-w-xs flex flex-col gap-y-6 border-r border-r-gray-200  bg-white p-4 lg:p-6 ">
@@ -52,14 +60,14 @@ export default async function DashboardLayout({
                 <nav className="flex flex-1 flex-col">
                     <ul role="list" className="flex flex-1 flex-col gap-y-4">
                         <li>
-                            <p>/ her goes your chat</p>
+                            <SidebarChats friends={friends} sessionId={session.user.id} />
                         </li>
                         <li>
                             <div>
                                 <p className="text-xs font-semibold leading-6 text-gray-400">
                                     Overview
                                 </p>
-                                <ul role="list" className=" mt-2 space-y-1">
+                                <ul role="list" className=" mt-2 space-y-2">
                                     {sidebarOptions.map((option) => {
                                         const Icon = Icons[option.Icon];
                                         return (
@@ -80,12 +88,11 @@ export default async function DashboardLayout({
                                             </li>
                                         );
                                     })}
+                                    <li>
+                                        <FriendRequestsSidbarOptions sessionId={session.user.id} initialUnseenFriendRequestCount={initialUnseenFriendRequestCount} />
+                                    </li>
                                 </ul>
                             </div>
-                        </li>
-
-                        <li>
-                            <FriendRequestsSidbarOptions sessionId={session.user.id} initialUnseenFriendRequestCount={initialUnseenFriendRequestCount} />
                         </li>
 
                         <li className=" mt-auto flex items-center">

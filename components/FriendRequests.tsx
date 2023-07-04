@@ -8,7 +8,7 @@ import axios from 'axios'
 import { toast } from 'react-hot-toast'
 
 type Props = {
-    initialIncomingFriendRequests: IncomingFriendRequest[],
+    initialIncomingFriendRequests: (IncomingFriendRequest)[],
     sessionId: string,
 
 }

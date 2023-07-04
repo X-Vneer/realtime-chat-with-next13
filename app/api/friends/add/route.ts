@@ -36,14 +36,14 @@ export async function POST(req: Request) {
         }
 
         // checking user if already added
-        const isAlreadyAdded = await db.sismember(`uesr:${toAddId}:incoming_friend_requests`, session.user.id)
+        const isAlreadyAdded = await db.sismember(`user:${toAddId}:incoming_friend_requests`, session.user.id)
 
         if (isAlreadyAdded) {
             return new Response('Already added this user', { status: 400 })
         }
 
         // check if user is already friedn
-        const isAlreadyFriend = await db.sismember(`uesr:${session.user.id}:friends`, toAddId)
+        const isAlreadyFriend = await db.sismember(`user:${session.user.id}:friends`, toAddId)
 
 
         if (isAlreadyFriend) {

@@ -9,8 +9,6 @@ type Props = {
     params: { chatId: string }
 }
 
-export const dynamic = 'force-dynamic'
-
 
 // 
 async function chatMessages(chatId: string) {
