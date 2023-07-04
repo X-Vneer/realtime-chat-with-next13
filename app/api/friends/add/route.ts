@@ -1,4 +1,4 @@
-import { fetchRedis } from "@/helpers/redis";
+// import { fetchRedis } from "@/helpers/redis";
 import { authOptions } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { addFriendValidator } from "@/lib/validation/add-friends";
@@ -29,25 +29,22 @@ export async function POST(req: Request) {
 
 
         // getting to-add-user id
-        const toAddId = (await fetchRedis(
-            'get',
-            `user:email:${emailToAdd}`
-        )) as string
-
+        const toAddId = await db.get<string>(`user:email:${emailToAdd}`)
 
         if (!toAddId) {
             return new Response(`User with email ${emailToAdd} is NOT FOUND!`, { status: 400 })
         }
 
         // checking user if already added
-        const isAlreadyAdded = (await fetchRedis('sismember', `uesr:${toAddId}:incoming_friend_requests`, session.user.id)) as 0 | 1
+        const isAlreadyAdded = await db.sismember(`uesr:${toAddId}:incoming_friend_requests`, session.user.id)
 
         if (isAlreadyAdded) {
             return new Response('Already added this user', { status: 400 })
         }
 
         // check if user is already friedn
-        const isAlreadyFriend = (await fetchRedis('sismember', `uesr:${session.user.id}:friends`, toAddId)) as 0 | 1
+        const isAlreadyFriend = await db.sismember(`uesr:${session.user.id}:friends`, toAddId)
+
 
         if (isAlreadyFriend) {
             return new Response('Already friend with this user', { status: 400 })

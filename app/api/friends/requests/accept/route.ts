@@ -1,4 +1,3 @@
-import { fetchRedis } from '@/helpers/redis'
 import { authOptions } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { getServerSession } from 'next-auth'
@@ -20,7 +19,7 @@ export async function POST(req: Request) {
 
 
         // checking user has reseved a friend req
-        const haveAFriendReq = (await fetchRedis('sismember', `user:${session.user.id}:incoming_friend_requests`, toAddId)) as 0 | 1
+        const haveAFriendReq = await db.sismember(`user:${session.user.id}:incoming_friend_requests`, toAddId)
 
         if (!haveAFriendReq) {
             return new Response('Could not accept this user, they did NOT send you a friend request yet', { status: 400 })
