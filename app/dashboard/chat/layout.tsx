@@ -3,9 +3,8 @@ import React from "react";
 
 export default function ChatLayout({ children }: { children: React.ReactNode }) {
 
-    return <div>
-        <h2>chat layout</h2>
+    return <section className=" grow h-screen  overflow-y-auto ">
         {children}
-    </div>
+    </section>
 
 }

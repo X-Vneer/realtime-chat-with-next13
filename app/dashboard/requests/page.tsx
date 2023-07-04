@@ -22,9 +22,9 @@ export default async function RequestsPage() {
         })
     )
     return (
-        <section className='p-8 grow'>
-            <h1 className='mb-8  text-3xl lg:text-5xl font-bold  text-gray-900'>Friend requests</h1>
-            <div className="flex flex-col gap-4">
+        <section className='p-4 lg:p-8 grow max-h-screen overflow-y-auto'>
+            <h1 className='mb-6 lg:mb-8  text-3xl lg:text-5xl font-bold  text-gray-900'>Friend requests</h1>
+            <div className="flex flex-col gap-3 lg:gap-4">
                 <FriendRequests initialIncomingFriendRequests={incomingFriendRequests} sessionId={session.user.id} />
             </div>
         </section>)
