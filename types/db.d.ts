@@ -15,7 +15,9 @@ interface Message {
     senderId: string,
     receiverId: string,
     text: string,
-    timestamp: number
+    timestamp: number,
+    isLoading?: boolean,
+    isError?: boolean,
 }
 
 interface FriendRequest {

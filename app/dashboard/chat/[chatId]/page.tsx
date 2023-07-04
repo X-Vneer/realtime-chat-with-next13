@@ -1,4 +1,5 @@
 import ChatContainer from "@/components/ChatContainer";
+import ChatInput from "@/components/ChatInput";
 import { authOptions } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { arrayMessageValidator } from "@/lib/validation/message";
@@ -17,9 +18,9 @@ async function chatMessages(chatId: string) {
 
     try {
         const dbMessages = (await db.zrange(`chat:${chatId}:messages`, 0, -1)) as Message[]
-        const reversedMessages = dbMessages.reverse()
+        // const reversedMessages = dbMessages.reverse()
 
-        const messages = arrayMessageValidator.parse(reversedMessages)
+        const messages = arrayMessageValidator.parse(dbMessages)
 
         return messages
 
@@ -54,8 +55,6 @@ export default async function Chat({ params: { chatId } }: Props) {
 
     const initialMessages = await chatMessages(chatId)
 
-
-
     return <div className="flex flex-col h-screen relative ">
         <div className=" absolute z-10  inset-x-0 px-4 lg:py-4 py-2 lg:px-8 flex  bg-[#202020fa] text-primary-foreground  shadow-lg">
             <div className="flex flex-1 items-center gap-x-4  text-sm font-semibold leading-6 text-gray-900">
@@ -78,6 +77,7 @@ export default async function Chat({ params: { chatId } }: Props) {
             </div>
         </div>
 
-        <ChatContainer sessionId={session.user.id} initialMessages={initialMessages} />
+        <ChatContainer chatId={chatId} partnerId={partnerId} sessionId={session.user.id} initialMessages={initialMessages} />
+        {/* <ChatInput /> */}
     </div>;
 }
