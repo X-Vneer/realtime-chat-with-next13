@@ -7,6 +7,8 @@ import Image from 'next/image'
 import axios from 'axios'
 import { toast } from 'react-hot-toast'
 import { usePathname, useRouter } from 'next/navigation'
+import { pusherClient } from '@/lib/pusher'
+import { generatePusherKey } from '@/helpers/utils'
 
 type Props = {
     initialIncomingFriendRequests: (IncomingFriendRequest)[],
@@ -18,6 +20,20 @@ const FriendRequests = ({ initialIncomingFriendRequests, sessionId }: Props) => 
     const [friendRequests, setFriendRequests] = useState<IncomingFriendRequest[]>(initialIncomingFriendRequests)
     const [isTakingAction, setIsTakingAction] = useState<string[]>([])
 
+
+
+
+    useEffect(() => {
+        pusherClient.subscribe(generatePusherKey(`user:${sessionId}:incoming_friend_requests`))
+        const friendRequestsHandler = () => { console.log('you have a friend req') }
+        pusherClient.bind('incoming_friend_requests', friendRequestsHandler)
+
+        return () => {
+            pusherClient.unsubscribe(`user:${sessionId}:incoming_friend_requests`)
+            pusherClient.unbind('incoming_friend_requests', friendRequestsHandler)
+        }
+
+    }, [])
 
     // accepting friend requests
     const acceptFriend = async (id: string) => {

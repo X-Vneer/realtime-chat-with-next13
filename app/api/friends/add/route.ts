@@ -1,6 +1,8 @@
 // import { fetchRedis } from "@/helpers/redis";
+import { generatePusherKey } from "@/helpers/utils";
 import { authOptions } from "@/lib/auth";
 import { db } from "@/lib/db";
+import { pusherSever } from "@/lib/pusher";
 import { addFriendValidator } from "@/lib/validation/add-friends";
 import { getServerSession } from "next-auth";
 import { z } from 'zod'
@@ -35,23 +37,31 @@ export async function POST(req: Request) {
             return new Response(`User with email ${emailToAdd} is NOT FOUND!`, { status: 400 })
         }
 
+
+        const [isAlreadyAdded, isAlreadyFriend] = await Promise.all([db.sismember(`user:${toAddId}:incoming_friend_requests`, session.user.id), db.sismember(`user:${session.user.id}:friends`, toAddId)])
         // checking user if already added
-        const isAlreadyAdded = await db.sismember(`user:${toAddId}:incoming_friend_requests`, session.user.id)
+        // const isAlreadyAdded = await db.sismember(`user:${toAddId}:incoming_friend_requests`, session.user.id)
 
         if (isAlreadyAdded) {
             return new Response('Already added this user', { status: 400 })
         }
 
-        // check if user is already friedn
-        const isAlreadyFriend = await db.sismember(`user:${session.user.id}:friends`, toAddId)
-
-
         if (isAlreadyFriend) {
             return new Response('Already friend with this user', { status: 400 })
         }
+        // check if user is already friedn
+        // const isAlreadyFriend = await db.sismember(`user:${session.user.id}:friends`, toAddId)
+
+
 
 
         // sending frind requst
+        pusherSever.trigger(generatePusherKey(`user:${toAddId}:incoming_friend_requests`), 'incoming_friend_requests', {
+            name: session.user.name,
+            email: session.user.email,
+            image: session.user.image,
+            id: session.user.id
+        })
 
         await db.sadd(`user:${toAddId}:incoming_friend_requests`, session.user.id)
 
