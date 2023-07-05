@@ -48,7 +48,8 @@ const ChatInput = ({ setMessages, partnerId, sessionId, handleScrollToButtomChat
 
         try {
 
-            await axios.post('/api/message/send', { text: inputMessage })
+            const response = await axios.post('/api/message/send', { text: inputMessage, chatId })
+            console.log("🚀 ~ file: ChatInput.tsx:52 ~ handleSendMessage ~ response:", response)
 
 
         } catch (error) {

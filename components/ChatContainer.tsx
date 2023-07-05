@@ -3,6 +3,7 @@ import { cn } from '@/lib/utils'
 import React, { useRef, useState } from 'react'
 import ChatInput from './ChatInput'
 import { AlertTriangle, Loader2 } from 'lucide-react'
+import { format } from 'date-fns'
 
 type Props = {
     initialMessages: Message[],
@@ -20,6 +21,12 @@ const ChatContainer = ({ initialMessages, sessionId, partnerId, chatId }: Props)
         if (!scrollDownRef.current) return
         scrollDownRef.current.scrollIntoView()
     }
+
+    // handle formate time stamp
+    const formatTimestamp = (timestamp: number) => {
+        return format(timestamp, 'HH:mm')
+
+    }
     return (
         <>
             <div id='messages' className="px-4 py-2 h-full flex flex-col  justify-center  pt-[70px]   overflow-y-auto scrollbar-thumb-rounded scrollbar-thumb-blue scrollbar-track-blue-lighter scrollbar-w-2">
@@ -27,7 +34,7 @@ const ChatContainer = ({ initialMessages, sessionId, partnerId, chatId }: Props)
                     {/* <div className='w-full h-[1px]' ref={scrollDownRef}></div> */}
                     {messages.map((message, index) => {
                         const userMessage = message.senderId === sessionId;
-                        const messageForTheSameUser = messages[index - 1]?.senderId === messages[index].senderId;
+                        const messageForTheSameUser = messages[index + 1]?.senderId === messages[index].senderId;
 
                         return (
                             <div className='----chat-message------' key={`${message.id}--${message.timestamp}`}>
@@ -37,7 +44,7 @@ const ChatContainer = ({ initialMessages, sessionId, partnerId, chatId }: Props)
                                             userMessage ? 'order-1  items-end' : "order-2 items-start",)}
                                     >
                                         <span className={cn("p-4 py-2 rounded-lg  inline-flex  items-center ",
-                                            userMessage ? 'bg-[#222] text-white' : "bg-gray-300  text-gray-900 ",
+                                            userMessage ? 'bg-[#222] text-white' : "bg-gray-300  text-gray-900 flex-row-reverse ",
                                             {
                                                 'rounded-br-none':
                                                     !messageForTheSameUser && userMessage,
@@ -47,7 +54,7 @@ const ChatContainer = ({ initialMessages, sessionId, partnerId, chatId }: Props)
                                             }
 
                                         )}>
-                                            {message.text} {' '} <span className='ml-2 text-[10px] text-gray-400'>{new Date(message.timestamp).getHours()}</span>
+                                            {message.text} {' '} <span className={cn(' text-[10px] text-gray-400 self-end ', userMessage ? 'ml-2' : "mr-2")}>{formatTimestamp(message.timestamp)}</span>
                                             {message.isLoading ? <Loader2 className='mx-2 h-4 w-4 shrink-0 animate-spin' /> : null}
                                             {message.isError ? <AlertTriangle className='h-4 w-4 mx-3' /> : null}
 
