@@ -61,7 +61,10 @@ export default async function DashboardLayout({
         <nav className="flex flex-1 flex-col">
           <ul role="list" className="flex flex-1 flex-col gap-y-4">
             <li>
-              <SidebarChats friends={friends} sessionId={session.user.id} />
+              <SidebarChats
+                intialFriends={friends}
+                sessionId={session.user.id}
+              />
             </li>
             <li>
               <div>

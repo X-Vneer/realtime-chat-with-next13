@@ -1,5 +1,7 @@
+import { generatePusherKey } from "@/helpers/utils";
 import { authOptions } from "@/lib/auth";
 import { db } from "@/lib/db";
+import { pusherSever } from "@/lib/pusher";
 import { getServerSession } from "next-auth";
 import { z } from "zod";
 
@@ -30,11 +32,34 @@ export async function POST(req: Request) {
     }
 
     // adding friends to each other and clean friend requests
-    await Promise.all([
+    const [addedFriend] = await Promise.all([
+      db.get<User>(`user:${toAddId}`),
       db.sadd(`user:${session.user.id}:friends`, toAddId),
       db.sadd(`user:${toAddId}:friends`, session.user.id),
       db.srem(`user:${session.user.id}:incoming_friend_requests`, toAddId),
     ]);
+
+    if (!addedFriend)
+      return new Response(
+        "Internal server error: Could not get added User data from the db",
+        { status: 500 }
+      );
+
+    pusherSever.trigger(
+      generatePusherKey(`user:${toAddId}:incoming_friend_requests`),
+      "new_friend_accepted",
+      {
+        name: session.user.name,
+        email: session.user.email,
+        image: session.user.image,
+        id: session.user.id,
+      }
+    );
+    pusherSever.trigger(
+      generatePusherKey(`user:${session.user.id}:incoming_friend_requests`),
+      "new_friend_accepted",
+      addedFriend
+    );
 
     return new Response("OK");
   } catch (error) {

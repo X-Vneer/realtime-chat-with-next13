@@ -56,6 +56,7 @@ export async function POST(req: Request) {
     // check if user is already friedn
     // const isAlreadyFriend = await db.sismember(`user:${session.user.id}:friends`, toAddId)
 
+    await db.sadd(`user:${toAddId}:incoming_friend_requests`, session.user.id);
     // sending frind requst
     pusherSever.trigger(
       generatePusherKey(`user:${toAddId}:incoming_friend_requests`),
@@ -67,8 +68,6 @@ export async function POST(req: Request) {
         id: session.user.id,
       }
     );
-
-    await db.sadd(`user:${toAddId}:incoming_friend_requests`, session.user.id);
 
     return new Response("OK");
   } catch (error) {

@@ -1,19 +1,27 @@
 "use client";
-import { generateChateId } from "@/helpers/utils";
+import { generateChateId, generatePusherKey } from "@/helpers/utils";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import Badge from "./ui/Badge";
+import { pusherClient } from "@/lib/pusher";
+import { useRealTimeUpdates } from "@/hooks/useRealTimeUpdates";
 
 type Props = {
-  friends: (User | null)[];
+  intialFriends: (User | null)[];
   sessionId: string;
 };
 
-const SidebarChats = ({ friends, sessionId }: Props) => {
+const SidebarChats = ({ intialFriends, sessionId }: Props) => {
+  const [chats, setChats] = useState(intialFriends);
+
   const router = useRouter();
   const pathName = usePathname();
+  console.log(
+    "🚀 ~ file: SidebarChats.tsx:21 ~ SidebarChats ~ pathName:",
+    pathName
+  );
 
   const [unSeenMegs, setUnSeenMegs] = useState<Message[]>([]);
 
@@ -26,10 +34,36 @@ const SidebarChats = ({ friends, sessionId }: Props) => {
     }
   }, [pathName]);
 
+  // real time added friends
+  const triggerFun = (newFriend: User) => {
+    setChats((pre) => [...pre, newFriend]);
+  };
+
+  useRealTimeUpdates<User>({
+    channel: `user:${sessionId}:chats`,
+    event: "new_friend_accepted",
+    triggerFun,
+  });
+
+  const newMessageTriggerFun = (message: Message) => {
+    if (
+      message.senderId === sessionId ||
+      window.location.href.includes(message.senderId)
+    )
+      return;
+    setUnSeenMegs((pre) => [message, ...pre]);
+  };
+
+  useRealTimeUpdates({
+    channel: `user:${sessionId}:chat`,
+    event: "new_unseen_message",
+    triggerFun: newMessageTriggerFun,
+  });
+
   return (
     <div>
       <ul role="list" className="max-h-[30vh] overflow-y-auto space-y-1">
-        {friends.sort().map((friend) => {
+        {chats.sort().map((friend) => {
           if (!friend) return null;
           const unSeenMegsCount = unSeenMegs.filter(
             (meg) => meg.senderId === friend.id
@@ -41,7 +75,6 @@ const SidebarChats = ({ friends, sessionId }: Props) => {
                   sessionId,
                   friend.id
                 )}`}
-                prefetch={false}
                 className="flex flex-1 items-center gap-x-4 px-2 py-3 rounded-md text-sm font-semibold leading-6 text-gray-900 duration-300 hover:bg-slate-100"
               >
                 <div className="relative h-8 w-8 ">

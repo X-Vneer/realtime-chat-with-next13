@@ -9,6 +9,7 @@ import { toast } from "react-hot-toast";
 import { usePathname, useRouter } from "next/navigation";
 import { pusherClient } from "@/lib/pusher";
 import { generatePusherKey } from "@/helpers/utils";
+import { useRealTimeUpdates } from "@/hooks/useRealTimeUpdates";
 
 type Props = {
   initialIncomingFriendRequests: IncomingFriendRequest[];
@@ -24,20 +25,14 @@ const FriendRequests = ({
   );
   const [isTakingAction, setIsTakingAction] = useState<string[]>([]);
 
-  useEffect(() => {
-    pusherClient.subscribe(
-      generatePusherKey(`user:${sessionId}:incoming_friend_requests`)
-    );
-    const friendRequestsHandler = (frdReq: IncomingFriendRequest) => {
-      setFriendRequests((pre) => [...pre, frdReq]);
-    };
-    pusherClient.bind("incoming_friend_requests", friendRequestsHandler);
-
-    return () => {
-      pusherClient.unsubscribe(`user:${sessionId}:incoming_friend_requests`);
-      pusherClient.unbind("incoming_friend_requests", friendRequestsHandler);
-    };
-  }, []);
+  const triggerFun = (frdReq: IncomingFriendRequest) => {
+    setFriendRequests((pre) => [...pre, frdReq]);
+  };
+  useRealTimeUpdates<User>({
+    channel: `user:${sessionId}:incoming_friend_requests`,
+    event: "incoming_friend_requests",
+    triggerFun,
+  });
 
   // accepting friend requests
   const acceptFriend = async (id: string) => {

@@ -1,11 +1,11 @@
 "use client";
 import { User } from "lucide-react";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Button } from "./ui/button";
 import Badge from "./ui/Badge";
-import { pusherClient } from "@/lib/pusher";
 import { generatePusherKey } from "@/helpers/utils";
+import { useRealTimeUpdates } from "@/hooks/useRealTimeUpdates";
 
 type Props = {
   sessionId: string;
@@ -20,20 +20,16 @@ const FriendRequestsSidbarOptions = ({
     initialUnseenFriendRequestCount
   );
 
-  useEffect(() => {
-    pusherClient.subscribe(
-      generatePusherKey(`user:${sessionId}:incoming_friend_requests`)
-    );
-    const friendRequestsHandler = () => {
-      setUnseenFriendRequest((pre) => ++pre);
-    };
-    pusherClient.bind("incoming_friend_requests", friendRequestsHandler);
+  // real time incomming req
+  const triggerFun = () => {
+    setUnseenFriendRequest((pre) => ++pre);
+  };
+  useRealTimeUpdates({
+    channel: `user:${sessionId}:incoming_friend_requests`,
+    event: "incoming_friend_requests",
+    triggerFun,
+  });
 
-    return () => {
-      pusherClient.unsubscribe(`user:${sessionId}:incoming_friend_requests`);
-      pusherClient.unbind("incoming_friend_requests", friendRequestsHandler);
-    };
-  }, []);
   return (
     <Link
       href="/dashboard/requests"

@@ -1,5 +1,4 @@
 import ChatContainer from "@/components/ChatContainer";
-import ChatInput from "@/components/ChatInput";
 import { authOptions } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { arrayMessageValidator } from "@/lib/validation/message";
@@ -75,7 +74,7 @@ export default async function Chat({ params: { chatId } }: Props) {
         chatId={chatId}
         partnerId={partnerId}
         sessionId={session.user.id}
-        initialMessages={initialMessages}
+        initialMessages={initialMessages.reverse()}
       />
       {/* <ChatInput /> */}
     </div>

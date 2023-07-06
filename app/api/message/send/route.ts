@@ -1,5 +1,7 @@
+import { generatePusherKey } from "@/helpers/utils";
 import { authOptions } from "@/lib/auth";
 import { db } from "@/lib/db";
+import { pusherSever } from "@/lib/pusher";
 import { nanoid } from "nanoid";
 import { getServerSession } from "next-auth";
 
@@ -12,10 +14,10 @@ export async function POST(req: Request) {
     };
     if (!text || !chatId)
       return new Response("invalid body params", { status: 422 });
-    console.log(text, chatId);
 
     // getting user session
     const session = await getServerSession(authOptions);
+
     if (!session || !chatId.includes(session.user.id))
       return new Response("Unauthorized", { status: 401 });
 
@@ -45,6 +47,18 @@ export async function POST(req: Request) {
       receiverId: partnerId,
       timestamp,
     };
+
+    pusherSever.trigger(
+      generatePusherKey(`chat:${chatId}`),
+      "incomming_message",
+      message
+    );
+    pusherSever.trigger(
+      generatePusherKey(`user:${partnerId}:chat`),
+      "new_unseen_message",
+      message
+    );
+
     const [partner] = await Promise.all([
       db.get<User>(`user:${partnerId}`),
       db.zadd(`chat:${chatId}:messages`, {
