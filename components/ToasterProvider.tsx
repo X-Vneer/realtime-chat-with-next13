@@ -1,13 +1,11 @@
-'use client'
-import React from 'react'
-import { Toaster } from 'react-hot-toast'
+"use client";
+import React from "react";
+import { Toaster } from "react-hot-toast";
 
-type Props = {}
+type Props = {};
 
 const ToasterProvider = (props: Props) => {
-  return (
-    <Toaster position='top-right' reverseOrder={false} />
-  )
-}
+  return <Toaster position="top-right" reverseOrder={false} />;
+};
 
-export default ToasterProvider
+export default ToasterProvider;
