@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Textarea } from "./ui/textarea";
 import { Button } from "./ui/button";
 import { SendIcon } from "lucide-react";
@@ -15,6 +15,12 @@ type Props = {
 
 const ChatInput = ({ setMessages, partnerId, sessionId, handleScrollToButtomChat, chatId }: Props) => {
     const textAreRef = useRef<HTMLTextAreaElement>(null);
+    const [random, setRandom] = useState(0)
+
+
+    useEffect(() => {
+        handleScrollToButtomChat()
+    }, [random])
 
     // dynamicly resizing text area
     const textRowCount = textAreRef.current
@@ -42,14 +48,13 @@ const ChatInput = ({ setMessages, partnerId, sessionId, handleScrollToButtomChat
         }
         if (!inputMessage) return
         setMessages((pre) => [...pre, message])
+        setRandom(Date.now())
         setInputMessage('')
-        handleScrollToButtomChat()
         textAreRef.current?.focus()
 
         try {
 
             const response = await axios.post('/api/message/send', { text: inputMessage, chatId })
-            console.log("🚀 ~ file: ChatInput.tsx:52 ~ handleSendMessage ~ response:", response)
 
 
         } catch (error) {
@@ -73,6 +78,7 @@ const ChatInput = ({ setMessages, partnerId, sessionId, handleScrollToButtomChat
         }
 
     };
+
     // handleing sending messgae using enter key
     const handleEnterKeyDown: React.KeyboardEventHandler<HTMLTextAreaElement> = (
         e
