@@ -10,26 +10,6 @@ type Props = {
   params: { chatId: string };
 };
 
-//
-async function chatMessages(chatId: string) {
-  try {
-    const dbMessages = (await db.zrange(
-      `chat:${chatId}:messages`,
-      0,
-      -1
-    )) as Message[];
-    // const reversedMessages = dbMessages.reverse()
-
-    const messages = arrayMessageValidator.parse(dbMessages);
-
-    return messages;
-  } catch (error) {
-    if (error) notFound();
-
-    return [];
-  }
-}
-
 export default async function Chat({ params: { chatId } }: Props) {
   const session = await getServerSession(authOptions);
   if (!session) redirect("/login");
@@ -46,8 +26,6 @@ export default async function Chat({ params: { chatId } }: Props) {
 
   const chatPartner = (await db.get(`user:${partnerId}`)) as User;
   if (!chatPartner) return notFound();
-
-  const initialMessages = await chatMessages(chatId);
 
   return (
     <div className="flex flex-col h-screen relative ">
@@ -74,7 +52,6 @@ export default async function Chat({ params: { chatId } }: Props) {
         chatId={chatId}
         partnerId={partnerId}
         sessionId={session.user.id}
-        initialMessages={initialMessages.reverse()}
       />
       {/* <ChatInput /> */}
     </div>

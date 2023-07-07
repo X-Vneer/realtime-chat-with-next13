@@ -1,27 +1,56 @@
 "use client";
 import { cn } from "@/lib/utils";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ChatInput from "./ChatInput";
 import { AlertTriangle, Loader2 } from "lucide-react";
 import { format } from "date-fns";
 import { useRealTimeUpdates } from "@/hooks/useRealTimeUpdates";
+import axios from "axios";
+import useSWR from "swr";
+import ChatLoading from "./ChatLoading";
 
 type Props = {
-  initialMessages: Message[];
   sessionId: string;
   partnerId: string;
   chatId: string;
 };
 
-const ChatContainer = ({
-  initialMessages,
-  sessionId,
-  partnerId,
-  chatId,
-}: Props) => {
+const ChatContainer = ({ sessionId, partnerId, chatId }: Props) => {
   const scrollDownRef = useRef<HTMLDivElement>(null);
 
-  const [messages, setMessages] = useState(initialMessages);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(false);
+  const [messages, setMessages] = useState<Message[]>([]);
+
+  useEffect(() => {
+    setIsLoading(true);
+    let cancel = false;
+
+    const fetchChat = async (chatId: string) => {
+      try {
+        const response = await axios.get<Message[]>(
+          `/api/chats?chatId=${chatId}`
+        );
+        if (!cancel) {
+          setMessages(response.data);
+          setError(false);
+        }
+      } catch (error) {
+        if (!cancel) {
+          setError(true);
+        }
+      } finally {
+        if (!cancel) {
+          setIsLoading(false);
+        }
+      }
+    };
+    fetchChat(chatId);
+
+    return () => {
+      cancel = true;
+    };
+  }, [chatId]);
 
   const handleScrollToButtomChat = () => {
     if (!scrollDownRef.current) return;
@@ -42,16 +71,18 @@ const ChatContainer = ({
     event: "incomming_message",
     triggerFun,
   });
+  if (isLoading) return <ChatLoading />;
+  if (error) return null;
   return (
     <>
       <div id="messages" className=" py-2   flex  flex-col justify-center">
-        <div className=" overflow-y-auto h-[calc(100vh-120px)] px-4 pt-[70px] scrollbar-thumb-rounded scrollbar-thumb-blue scrollbar-track-blue-lighter scrollbar-w-2">
+        <div className=" overflow-y-auto h-[calc(100vh-130px)] px-4 pt-[70px] scrollbar-thumb-rounded scrollbar-thumb-blue scrollbar-track-blue-lighter scrollbar-w-2">
           <div className="flex flex-col-reverse  min-h-full  shrink-0 grow gap-4 mt-auto">
             <div className="w-full h-[1px]" ref={scrollDownRef}></div>
             {messages.map((message, index) => {
-              const userMessage = message.senderId === sessionId;
+              const userMessage = message?.senderId === sessionId;
               const messageForTheSameUser =
-                messages[index - 1]?.senderId === messages[index].senderId;
+                messages[index - 1]?.senderId === messages[index]?.senderId;
 
               return (
                 <div
