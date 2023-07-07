@@ -31,7 +31,7 @@ const ChatInput = ({
   // dynamicly resizing text area
   const textRowCount = textAreRef.current
     ? textAreRef.current.value.split("\n").length
-    : 0;
+    : 1;
   const rows = textRowCount <= 3 ? textRowCount : 4;
 
   const [inputMessage, setInputMessage] = useState("");

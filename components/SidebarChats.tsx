@@ -1,11 +1,10 @@
 "use client";
-import { generateChateId, generatePusherKey } from "@/helpers/utils";
+import { generateChateId } from "@/helpers/utils";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import Badge from "./ui/Badge";
-import { pusherClient } from "@/lib/pusher";
 import { useRealTimeUpdates } from "@/hooks/useRealTimeUpdates";
 
 type Props = {
@@ -16,12 +15,7 @@ type Props = {
 const SidebarChats = ({ intialFriends, sessionId }: Props) => {
   const [chats, setChats] = useState(intialFriends);
 
-  const router = useRouter();
   const pathName = usePathname();
-  console.log(
-    "🚀 ~ file: SidebarChats.tsx:21 ~ SidebarChats ~ pathName:",
-    pathName
-  );
 
   const [unSeenMegs, setUnSeenMegs] = useState<Message[]>([]);
 

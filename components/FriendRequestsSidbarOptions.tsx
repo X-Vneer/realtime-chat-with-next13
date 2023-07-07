@@ -1,11 +1,12 @@
 "use client";
 import { User } from "lucide-react";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import Badge from "./ui/Badge";
 import { generatePusherKey } from "@/helpers/utils";
 import { useRealTimeUpdates } from "@/hooks/useRealTimeUpdates";
+import { usePathname } from "next/navigation";
 
 type Props = {
   sessionId: string;
@@ -29,6 +30,15 @@ const FriendRequestsSidbarOptions = ({
     event: "incoming_friend_requests",
     triggerFun,
   });
+
+  const pathName = usePathname();
+
+  useEffect(() => {
+    // marking chats as seen if navigated to
+    if (pathName.includes("requests")) {
+      setUnseenFriendRequest(0);
+    }
+  }, [pathName]);
 
   return (
     <Link
