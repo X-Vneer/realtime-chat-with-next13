@@ -6,7 +6,6 @@ import { AlertTriangle, Loader2 } from "lucide-react";
 import { format } from "date-fns";
 import { useRealTimeUpdates } from "@/hooks/useRealTimeUpdates";
 import axios from "axios";
-import useSWR from "swr";
 import ChatLoading from "./ChatLoading";
 
 type Props = {

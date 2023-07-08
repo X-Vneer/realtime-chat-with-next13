@@ -1,7 +1,6 @@
 import ChatContainer from "@/components/ChatContainer";
 import { authOptions } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { arrayMessageValidator } from "@/lib/validation/message";
 import { getServerSession } from "next-auth";
 import Image from "next/image";
 import { notFound, redirect } from "next/navigation";

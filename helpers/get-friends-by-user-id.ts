@@ -7,5 +7,9 @@ export default async function getFriendsByUserId(userId: string) {
     friendIdsArray.map(async (id) => await db.get<User>(`user:${id}`))
   );
 
-  return friends.filter(Boolean);
+  const filteredArray = friends.filter((item): item is User => {
+    return !!item;
+  });
+
+  return filteredArray;
 }
