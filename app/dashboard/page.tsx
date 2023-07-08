@@ -49,10 +49,10 @@ const page = async ({}) => {
                 session.user.id,
                 friend.id
               )}`}
-              className="relative sm:flex"
+              className="relative flex gap-2 items-center"
             >
-              <div className="mb-4 flex-shrink-0 sm:mb-0 sm:mr-4">
-                <div className="relative h-6 w-6">
+              <div className="  shrink-0  sm:mr-4">
+                <div className="relative h-8 w-8">
                   <Image
                     referrerPolicy="no-referrer"
                     className="rounded-full"
@@ -64,8 +64,8 @@ const page = async ({}) => {
               </div>
 
               <div>
-                <h4 className="text-lg font-semibold">{friend.name}</h4>
-                <p className="mt-1 max-w-md">
+                <h4 className="md:text-lg font-semibold">{friend.name}</h4>
+                <p className="mt-1 max-md:text-sm max-w-md">
                   <span className="text-zinc-400">
                     {friend.lastMessage.senderId === session.user.id
                       ? "You: "

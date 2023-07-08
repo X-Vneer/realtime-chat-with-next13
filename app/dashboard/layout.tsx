@@ -12,6 +12,8 @@ import FriendRequestsSidbarOptions from "@/components/FriendRequestsSidbarOption
 import getFriendsByUserId from "@/helpers/get-friends-by-user-id";
 import { db } from "@/lib/db";
 import SidebarChats from "@/components/SidebarChats";
+import MobileChatLayout from "@/components/MobileChatLayout";
+// import MobileChatLayout from "@/components/MobileChatLayout";
 
 type SidebarOptions = {
   id: number;
@@ -49,11 +51,7 @@ export default async function DashboardLayout({
 
   return (
     <main className="flex min-h-screen ">
-      <div className=" w-full max-w-xs flex flex-col gap-y-6 border-r border-r-gray-200  bg-white p-4 lg:p-6 ">
-        <Link href={"/dashboard"} className="flex h-16 w-fit items-center">
-          <Icons.Logo className="h-8 text-indigo-600" />
-        </Link>
-
+      <MobileChatLayout>
         <div>
           <p className="font-semibold text-gray-400 text-xs">Your Chats</p>
         </div>
@@ -117,7 +115,7 @@ export default async function DashboardLayout({
                 </div>
 
                 <span className="sr-only">Your profile</span>
-                <div className="flex flex-col">
+                <div className="flex flex-col ">
                   <span aria-hidden="true">{session.user.name}</span>
                   <span className="text-xs text-zinc-400" aria-hidden="true">
                     {session.user.email}
@@ -129,7 +127,7 @@ export default async function DashboardLayout({
             </li>
           </ul>
         </nav>
-      </div>
+      </MobileChatLayout>
 
       {children}
     </main>

@@ -3,7 +3,6 @@ import { db } from "@/lib/db";
 import { arrayMessageValidator } from "@/lib/validation/message";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
-import { z } from "zod";
 
 export async function GET(req: Request) {
   try {

@@ -56,7 +56,7 @@ const SidebarChats = ({ intialFriends, sessionId }: Props) => {
 
   return (
     <div>
-      <ul role="list" className="max-h-[30vh] overflow-y-auto space-y-1">
+      <ul role="list" className="max-h-[40vh] overflow-y-auto space-y-1">
         {chats.sort().map((friend) => {
           if (!friend) return null;
           const unSeenMegsCount = unSeenMegs.filter(

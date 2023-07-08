@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
  
+*{-webkit-tap-highlight-color: transparent;}
 @layer base {
   :root {
     --background: 0 0% 100%;
