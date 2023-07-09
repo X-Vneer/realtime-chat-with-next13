@@ -6,6 +6,7 @@ export default withAuth(
   async function (req) {
     const pathName = req.nextUrl.pathname
 
+    console.log("🚀 ~ file: middleware.ts:7 ~ req:", req)
     // mange route protection
     const isAuth = await getToken({ req })
     console.log("🚀 ~ file: middleware.ts:11 ~ isAuth:", isAuth)
