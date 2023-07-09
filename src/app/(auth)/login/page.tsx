@@ -1,24 +1,24 @@
-"use client";
+"use client"
 
-import { Button } from "@/src/components/ui/button";
-import React, { useState } from "react";
-import { signIn } from "next-auth/react";
-import { toast } from "react-hot-toast";
+import { Button } from "@/src/components/ui/button"
+import React, { useState } from "react"
+import { signIn } from "next-auth/react"
+import { toast } from "react-hot-toast"
 
 export default function Login() {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false)
 
   const loginWithGoogle = async () => {
-    setIsLoading(true);
+    setIsLoading(true)
 
     try {
-      await signIn("google");
+      await signIn("google")
     } catch (error) {
-      toast.error("Sorry, something went wrong!");
+      toast.error("Sorry, something went wrong!")
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
   return (
     <>
       <div className="flex min-h-screen justify-center  items-center  py-12 px-4 sm:px-6 lg:px-8  ">
@@ -70,5 +70,5 @@ export default function Login() {
         </div>
       </div>
     </>
-  );
+  )
 }

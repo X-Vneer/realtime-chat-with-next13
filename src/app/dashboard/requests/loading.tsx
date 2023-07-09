@@ -1,7 +1,7 @@
-import { Loader2 } from "lucide-react";
-import React from "react";
+import { Loader2 } from "lucide-react"
+import React from "react"
 
-type Props = {};
+type Props = {}
 
 const Loading = (props: Props) => {
   return (
@@ -11,7 +11,7 @@ const Loading = (props: Props) => {
         loading...
       </p>
     </div>
-  );
-};
+  )
+}
 
-export default Loading;
+export default Loading
