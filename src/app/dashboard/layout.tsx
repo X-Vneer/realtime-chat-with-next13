@@ -1,29 +1,29 @@
-import { authOptions } from "@/src/lib/auth";
-import { redirect } from "next/navigation";
-import Link from "next/link";
-import { getServerSession } from "next-auth";
-import { ReactNode } from "react";
-import { Icons } from "@/src/components/Icons";
-import type { Icon } from "@/src/components/Icons";
-import { Button } from "@/src/components/ui/button";
-import Image from "next/image";
-import SignoutButton from "@/src/components/ui/SignoutButton";
-import FriendRequestsSidbarOptions from "@/src/components/FriendRequestsSidbarOptions";
-import getFriendsByUserId from "@/src/helpers/get-friends-by-user-id";
-import { db } from "@/src/lib/db";
-import SidebarChats from "@/src/components/SidebarChats";
-import MobileChatLayout from "@/src/components/MobileChatLayout";
+import { authOptions } from "@/src/lib/auth"
+import { redirect } from "next/navigation"
+import Link from "next/link"
+import { getServerSession } from "next-auth"
+import { ReactNode } from "react"
+import { Icons } from "@/src/components/Icons"
+import type { Icon } from "@/src/components/Icons"
+import { Button } from "@/src/components/ui/button"
+import Image from "next/image"
+import SignoutButton from "@/src/components/ui/SignoutButton"
+import FriendRequestsSidbarOptions from "@/src/components/FriendRequestsSidbarOptions"
+import getFriendsByUserId from "@/src/helpers/get-friends-by-user-id"
+import { db } from "@/src/lib/db"
+import SidebarChats from "@/src/components/SidebarChats"
+import MobileChatLayout from "@/src/components/MobileChatLayout"
 // import MobileChatLayout from "@/components/MobileChatLayout";
 
 type SidebarOptions = {
-  id: number;
-  name: string;
-  href: string;
-  Icon: Icon;
-};
+  id: number
+  name: string
+  href: string
+  Icon: Icon
+}
 
 // to force dynamic pages
-export const dynamic = "force-dynamic";
+export const dynamic = "force-dynamic"
 
 const sidebarOptions: SidebarOptions[] = [
   {
@@ -32,22 +32,22 @@ const sidebarOptions: SidebarOptions[] = [
     href: "/dashboard/add-friends",
     Icon: "UserPlus",
   },
-];
+]
 export default async function DashboardLayout({
   children,
 }: {
-  children: ReactNode;
+  children: ReactNode
 }) {
-  const session = await getServerSession(authOptions);
-  if (!session) redirect("/login");
+  const session = await getServerSession(authOptions)
+  if (!session) redirect("/login")
 
   // getting initialUnseenFriendRequestCount
   const initialUnseenFriendRequestCount = (
     await db.smembers(`user:${session.user.id}:incoming_friend_requests`)
-  ).length;
+  ).length
 
   // fetching friends
-  const friends = await getFriendsByUserId(session.user.id);
+  const friends = await getFriendsByUserId(session.user.id)
 
   return (
     <main className="flex min-h-screen ">
@@ -71,7 +71,7 @@ export default async function DashboardLayout({
                 </p>
                 <ul role="list" className=" mt-2 space-y-2">
                   {sidebarOptions.map((option) => {
-                    const Icon = Icons[option.Icon];
+                    const Icon = Icons[option.Icon]
                     return (
                       <li key={option.id}>
                         <Link
@@ -88,7 +88,7 @@ export default async function DashboardLayout({
                           <span className="truncate">{option.name}</span>
                         </Link>
                       </li>
-                    );
+                    )
                   })}
                   <li>
                     <FriendRequestsSidbarOptions
@@ -131,5 +131,5 @@ export default async function DashboardLayout({
 
       {children}
     </main>
-  );
+  )
 }

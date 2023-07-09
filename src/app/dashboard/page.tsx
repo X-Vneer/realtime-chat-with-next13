@@ -1,18 +1,18 @@
-import getFriendsByUserId from "@/src/helpers/get-friends-by-user-id";
-import { authOptions } from "@/src/lib/auth";
-import { generateChateId } from "@/src/helpers/utils";
-import { ChevronRight } from "lucide-react";
-import { getServerSession } from "next-auth";
-import Image from "next/image";
-import Link from "next/link";
-import { notFound } from "next/navigation";
-import { db } from "@/src/lib/db";
+import getFriendsByUserId from "@/src/helpers/get-friends-by-user-id"
+import { authOptions } from "@/src/lib/auth"
+import { generateChateId } from "@/src/helpers/utils"
+import { ChevronRight } from "lucide-react"
+import { getServerSession } from "next-auth"
+import Image from "next/image"
+import Link from "next/link"
+import { notFound } from "next/navigation"
+import { db } from "@/src/lib/db"
 
 const page = async ({}) => {
-  const session = await getServerSession(authOptions);
-  if (!session) notFound();
+  const session = await getServerSession(authOptions)
+  if (!session) notFound()
 
-  const friends = await getFriendsByUserId(session.user.id);
+  const friends = await getFriendsByUserId(session.user.id)
 
   const friendsWithLastMessage = await Promise.all(
     friends.map(async (friend) => {
@@ -20,14 +20,14 @@ const page = async ({}) => {
         `chat:${generateChateId(session.user.id, friend.id)}:messages`,
         -1,
         -1
-      );
+      )
 
       return {
         ...friend,
         lastMessage,
-      };
+      }
     })
-  );
+  )
 
   return (
     <div className=" p-8 grow">
@@ -79,7 +79,7 @@ const page = async ({}) => {
         ))
       )}
     </div>
-  );
-};
+  )
+}
 
-export default page;
+export default page
