@@ -28,7 +28,7 @@ export default async function Chat({ params: { chatId } }: Props) {
 
   return (
     <div className="flex flex-col h-full md:h-screen relative ">
-      <div className=" absolute z-10  inset-x-0 px-4 lg:py-4 py-2 lg:px-8 flex  bg-[#202020fa] text-primary-foreground  shadow-lg">
+      <div className=" fixed z-10 left-0 md:left-[320px] right-0 px-4 lg:py-4 py-2 lg:px-8 flex  bg-[#202020fa] text-primary-foreground  shadow-lg">
         <div className="flex flex-1 items-center gap-x-4  text-sm font-semibold leading-6 text-gray-900">
           <div className="relative h-8 w-8 ">
             <Image
