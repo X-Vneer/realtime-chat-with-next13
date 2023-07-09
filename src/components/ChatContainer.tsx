@@ -1,87 +1,87 @@
-"use client";
-import { cn } from "@/src/lib/utils";
-import React, { useEffect, useRef, useState } from "react";
-import ChatInput from "./ChatInput";
-import { AlertTriangle, Loader2 } from "lucide-react";
-import { format } from "date-fns";
-import { useRealTimeUpdates } from "@/src/hooks/useRealTimeUpdates";
-import axios from "axios";
-import ChatLoading from "./ChatLoading";
+"use client"
+import { cn } from "@/src/lib/utils"
+import React, { useEffect, useRef, useState } from "react"
+import ChatInput from "./ChatInput"
+import { AlertTriangle, Loader2 } from "lucide-react"
+import { format } from "date-fns"
+import { useRealTimeUpdates } from "@/src/hooks/useRealTimeUpdates"
+import axios from "axios"
+import ChatLoading from "./ChatLoading"
 
 type Props = {
-  sessionId: string;
-  partnerId: string;
-  chatId: string;
-};
+  sessionId: string
+  partnerId: string
+  chatId: string
+}
 
 const ChatContainer = ({ sessionId, partnerId, chatId }: Props) => {
-  const scrollDownRef = useRef<HTMLDivElement>(null);
+  const scrollDownRef = useRef<HTMLDivElement>(null)
 
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState(false)
+  const [messages, setMessages] = useState<Message[]>([])
 
   useEffect(() => {
-    setIsLoading(true);
-    let cancel = false;
+    setIsLoading(true)
+    let cancel = false
 
     const fetchChat = async (chatId: string) => {
       try {
         const response = await axios.get<Message[]>(
           `/api/chats?chatId=${chatId}`
-        );
+        )
         if (!cancel) {
-          setMessages(response.data);
-          setError(false);
+          setMessages(response.data)
+          setError(false)
         }
       } catch (error) {
         if (!cancel) {
-          setError(true);
+          setError(true)
         }
       } finally {
         if (!cancel) {
-          setIsLoading(false);
+          setIsLoading(false)
         }
       }
-    };
-    fetchChat(chatId);
+    }
+    fetchChat(chatId)
 
     return () => {
-      cancel = true;
-    };
-  }, [chatId]);
+      cancel = true
+    }
+  }, [chatId])
 
   const handleScrollToButtomChat = () => {
-    if (!scrollDownRef.current) return;
-    scrollDownRef.current.scrollIntoView();
-  };
+    if (!scrollDownRef.current) return
+    scrollDownRef.current.scrollIntoView()
+  }
 
   // handle formate time stamp
   const formatTimestamp = (timestamp: number) => {
-    return format(timestamp, "HH:mm");
-  };
+    return format(timestamp, "HH:mm")
+  }
 
   const triggerFun = (newMessage: Message) => {
-    if (newMessage.senderId === sessionId) return;
-    setMessages((pre) => [newMessage, ...pre]);
-  };
+    if (newMessage.senderId === sessionId) return
+    setMessages((pre) => [newMessage, ...pre])
+  }
   useRealTimeUpdates({
     channel: `chat:${chatId}`,
     event: "incomming_message",
     triggerFun,
-  });
-  if (isLoading) return <ChatLoading />;
-  if (error) return null;
+  })
+  if (isLoading) return <ChatLoading />
+  if (error) return null
   return (
     <>
       <div id="messages" className="    flex  flex-col justify-center">
-        <div className=" overflow-y-auto h-screen px-4 pt-[80px] pb-[90px] scrollbar-thumb-rounded scrollbar-thumb-blue scrollbar-track-blue-lighter scrollbar-w-2">
-          <div className="flex flex-col-reverse  min-h-full  shrink-0 grow gap-4 mt-auto">
+        <div className=" overflow-y-auto h-[93vh] md:h-screen px-4 pt-[80px] pb-[90px] scrollbar-thumb-rounded scrollbar-thumb-blue scrollbar-track-blue-lighter scrollbar-w-2">
+          <div className="flex flex-col-reverse   min-h-full  shrink-0 grow gap-4 mt-auto">
             <div className="w-full h-[1px]" ref={scrollDownRef}></div>
             {messages.map((message, index) => {
-              const userMessage = message?.senderId === sessionId;
+              const userMessage = message?.senderId === sessionId
               const messageForTheSameUser =
-                messages[index - 1]?.senderId === messages[index]?.senderId;
+                messages[index - 1]?.senderId === messages[index]?.senderId
 
               return (
                 <div
@@ -131,7 +131,7 @@ const ChatContainer = ({ sessionId, partnerId, chatId }: Props) => {
                     </div>
                   </div>
                 </div>
-              );
+              )
             })}
             {/* <div className="w-full h-[1px]" ref={scrollDownRef}></div> */}
           </div>
@@ -145,7 +145,7 @@ const ChatContainer = ({ sessionId, partnerId, chatId }: Props) => {
         setMessages={setMessages}
       />
     </>
-  );
-};
+  )
+}
 
-export default ChatContainer;
+export default ChatContainer
