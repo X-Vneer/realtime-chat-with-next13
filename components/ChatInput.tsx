@@ -32,7 +32,7 @@ const ChatInput = ({
   const textRowCount = textAreRef.current
     ? textAreRef.current.value.split("\n").length
     : 1;
-  const rows = textRowCount <= 3 ? textRowCount : 4;
+  const rows = textRowCount <= 3 ? textRowCount : 3;
 
   const [inputMessage, setInputMessage] = useState("");
   const handleInputMessageChange: React.ChangeEventHandler<
@@ -101,7 +101,7 @@ const ChatInput = ({
   };
 
   return (
-    <div className="border-t border-gray-200 px-4 pb-10 pt-2 sm:mb-0 flex gap-3 a  items-center">
+    <div className=" absolute inset-x-0 bottom-0 bg-white border-t border-gray-200 px-4 pb-10 pt-2 sm:mb-0 flex gap-3 a  items-center">
       <Textarea
         ref={textAreRef}
         rows={rows}

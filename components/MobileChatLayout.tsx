@@ -44,7 +44,9 @@ const MobileChatLayout = ({ children }: Props) => {
       ) : null}
       <div
         className={cn(
-          !show ? "sr-only" : "max-md:fixed  inset-y-0 left-0 bg-white z-20",
+          !show
+            ? "max-md:sr-only"
+            : "max-md:fixed  inset-y-0 left-0 bg-white z-20",
           "duration-300"
         )}
         onClick={handleClose}

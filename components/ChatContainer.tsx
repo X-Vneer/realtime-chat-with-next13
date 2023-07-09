@@ -74,8 +74,8 @@ const ChatContainer = ({ sessionId, partnerId, chatId }: Props) => {
   if (error) return null;
   return (
     <>
-      <div id="messages" className=" py-2   flex  flex-col justify-center">
-        <div className=" overflow-y-auto h-[calc(100vh-130px)] px-4 pt-[70px] scrollbar-thumb-rounded scrollbar-thumb-blue scrollbar-track-blue-lighter scrollbar-w-2">
+      <div id="messages" className="    flex  flex-col justify-center">
+        <div className=" overflow-y-auto h-screen px-4 pt-[80px] pb-[90px] scrollbar-thumb-rounded scrollbar-thumb-blue scrollbar-track-blue-lighter scrollbar-w-2">
           <div className="flex flex-col-reverse  min-h-full  shrink-0 grow gap-4 mt-auto">
             <div className="w-full h-[1px]" ref={scrollDownRef}></div>
             {messages.map((message, index) => {
