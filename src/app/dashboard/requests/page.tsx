@@ -1,6 +1,6 @@
-import FriendRequests from "@/components/FriendRequests";
-import { authOptions } from "@/lib/auth";
-import { db } from "@/lib/db";
+import FriendRequests from "@/src/components/FriendRequests";
+import { authOptions } from "@/src/lib/auth";
+import { db } from "@/src/lib/db";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 
