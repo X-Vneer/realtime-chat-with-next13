@@ -69,6 +69,7 @@ export async function POST(req: Request) {
 
     return new Response("ok")
   } catch (error) {
+    console.log("🚀 ~ file: route.ts:72 ~ POST ~ error:", error)
     if (error instanceof Error) {
       return new Response(error.message, { status: 500 })
     }

@@ -1,17 +1,17 @@
-import type { NextAuthOptions } from "next-auth";
-import GoogleProvider from "next-auth/providers/google";
-import { UpstashRedisAdapter } from "@next-auth/upstash-redis-adapter";
-import { db } from "./db";
+import type { NextAuthOptions } from "next-auth"
+import GoogleProvider from "next-auth/providers/google"
+import { UpstashRedisAdapter } from "@next-auth/upstash-redis-adapter"
+import { db } from "./db"
 
 // making sure we have google credentials
 function getGoogleCredentials() {
-  const clientId = process.env.GOOGLE_CLIENT_ID;
-  const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
+  const clientId = process.env.GOOGLE_CLIENT_ID
+  const clientSecret = process.env.GOOGLE_CLIENT_SECRET
   if (!clientId || clientId.length === 0)
-    throw Error("MISSING GOOGLE_CLINET_ID");
+    throw Error("MISSING GOOGLE_CLINET_ID")
   if (!clientSecret || clientSecret.length === 0)
-    throw Error("MISSING GOOGLE_CLINET_SECRET");
-  return { clientId, clientSecret };
+    throw Error("MISSING GOOGLE_CLINET_SECRET")
+  return { clientId, clientSecret }
 }
 
 export const authOptions: NextAuthOptions = {
@@ -35,11 +35,11 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       // to determind if it's a new user or not
-      const dbUser = (await db.get(`user:${token.id}`)) as User | null;
+      const dbUser = (await db.get(`user:${token.id}`)) as User | null
 
       if (!dbUser) {
-        token.id = user?.id;
-        return token;
+        token.id = user?.id
+        return token
       }
 
       return {
@@ -47,20 +47,20 @@ export const authOptions: NextAuthOptions = {
         name: dbUser.name,
         email: dbUser.email,
         picture: dbUser.image,
-      };
+      }
     },
     async session({ session, token }) {
       if (token) {
-        session.user.id = token.id;
-        session.user.name = token.name;
-        session.user.email = token.email;
-        session.user.image = token.picture;
+        session.user.id = token.id
+        session.user.name = token.name
+        session.user.email = token.email
+        session.user.image = token.picture
       }
 
-      return session;
+      return session
     },
     redirect() {
-      return "/dashboard";
+      return "/dashboard"
     },
   },
-};
+}
