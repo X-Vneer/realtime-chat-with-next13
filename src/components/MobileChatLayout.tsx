@@ -1,26 +1,26 @@
-"use client";
+"use client"
 
-import React, { ReactNode, useState } from "react";
-import { Button } from "./ui/button";
-import { X } from "lucide-react";
-import { Icons } from "./Icons";
-import Link from "next/link";
-import { cn } from "@/src/lib/utils";
-import { Menu } from "lucide-react";
-import { usePathname } from "next/navigation";
+import React, { ReactNode, useState } from "react"
+import { Button } from "./ui/button"
+import { X } from "lucide-react"
+import { Icons } from "./Icons"
+import Link from "next/link"
+import { cn } from "@/src/lib/utils"
+import { Menu } from "lucide-react"
+import { usePathname } from "next/navigation"
 
-type Props = { children: ReactNode };
+type Props = { children: ReactNode }
 
 const MobileChatLayout = ({ children }: Props) => {
-  const [show, setShow] = useState(false);
+  const [show, setShow] = useState(false)
   const handleClose = () => {
-    setShow(false);
-  };
+    setShow(false)
+  }
   const handleOpen = () => {
-    setShow(true);
-  };
+    setShow(true)
+  }
 
-  const pathName = usePathname();
+  const pathName = usePathname()
 
   //
   return (
@@ -52,7 +52,7 @@ const MobileChatLayout = ({ children }: Props) => {
         onClick={handleClose}
       >
         {show ? <div className="fixed inset-0  bg-[#87878778]"></div> : null}
-        <div className=" relative  w-full h-full max-w-xs flex flex-col gap-y-6 border-r border-r-gray-200  bg-white p-4 lg:p-6 ">
+        <div className=" relative  h-full w-[320px] flex flex-col gap-y-6 border-r border-r-gray-200  bg-white p-4 lg:p-6 ">
           <div className="flex  items-center justify-between">
             <Link href={"/dashboard"} className="flex h-16 w-fit items-center">
               <Icons.Logo className="h-8 text-indigo-600" />
@@ -69,7 +69,7 @@ const MobileChatLayout = ({ children }: Props) => {
         </div>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default MobileChatLayout;
+export default MobileChatLayout
